@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-
+const { readdir: rd } = require('fs/promises');
 const folderPath = path.join(__dirname, 'secret-folder');
 
 const getFileStat = (file) => {
@@ -15,9 +15,14 @@ const getFileStat = (file) => {
   }
 };
 
-fs.readdir(folderPath, { withFileTypes: true }, (err, data) => {
-  if (err)
-    throw err;
-  else
-    data.forEach(getFileStat);
-});
+async function getFilesInfo() {
+  try {
+    const fileList = await rd(folderPath, { withFileTypes: true });
+    for (const file of fileList)
+      getFileStat(file);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+getFilesInfo();
