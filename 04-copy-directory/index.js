@@ -16,7 +16,7 @@ function copyFolder(srcFolder, destFolder) {
           if (file.isFile()) {
             fs.copyFile(path.join(srcFolder, file.name), path.join(destFolder, file.name), () => {});
           } else {
-            copyFolder(path.join(srcFolder,file.name));
+            copyFolder(path.join(srcFolder,file.name), path.join(destFolder,file.name));
           }
         });
       });
@@ -26,5 +26,11 @@ function copyFolder(srcFolder, destFolder) {
   }
 }
 
-copyFolder(srcFolder, destFolder);
+
+fs.rm(destFolder, { recursive: true, force: true }, (err) => {
+  if (err) throw err;
+  copyFolder(srcFolder, destFolder);
+});
+
+
 
